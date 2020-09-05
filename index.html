@@ -1,10 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-</head>
-<body>
-    TESTE2    
-</body>
+<html>
+    <head>
+        <title>Projeto de Estastística</title>
+        <meta charset="uft-8">
+    </head>
+    <body>
+        <dt>Coleta de dados</dt>
+        <input id="coleta" placeholder="Exemplo: preto;rosa;verde" size="20">
+
+        <form class="form" id="myForm">
+            <input type="file" id="inpFile"><br>
+            <button type="submit">Subir arquivo</button>
+        </form>
+        
+        <input type="radio" name="proporcao" id="amostra" value="Amostra">
+        <label for="amostra">Amostra</label>
+        <input type="radio" name="proporcao" id="populacao" value="População">
+        <label for="populacao">População</label><br><br>
+
+        <dt>Nome da variavel</dt>
+        <input id="variavel" placeholder="Exemplo: Camisetas" size="20">
+
+        <select id="tipo">
+            <option value="qualiNominal">Qualitativa Nominal</option>
+            <option value="qualiOrdinal">Qualitativa Ordinal</option>
+            <option value="quantDiscreta">Quantitativa Discreta</option>
+            <option value="quantContinua">Quantitativa Continua</option>
+        </select><br><br>
+        
+        <button onclick="extrair()" id="botaoCon">Concluir</button>
+    </body>
+    <script>
+        const myForm = document.getElementById('myForm')
+        const inpFile = document.getElementById('inpFile')
+
+        myForm.addEventListener('submit', e =>{
+            e.preventDefault();
+            const endpoint = 'uplood.php'
+            const formData = new FormData()
+            formData.append('inpFile', inpFile.files[0])
+            fetch(endpoint, {
+                method: 'post'
+                body: formData
+            }).catch(console.error);
+        })
+
+        let coletaSep = []
+        function extrair(){
+            var coletaDad = document.getElementById("coleta").value
+            var amoOuPop = document.getElementsByName("proporcao")
+            var tipoVa = document.getElementById("tipo").value
+
+            //coleta de dados exemplo que da errado: 23;1;2;10;0;9
+            coletaSep = coletaDad.split(";")
+            var menor = coletaSep[0]
+            var aux = 0
+            for(var i = 0; i < coletaSep.length; i++){
+                for(var j = i; j < coletaSep.length; j++){
+                    if(coletaSep[j] < menor){
+                        aux = menor
+                        menor = coletaSep[j]
+                        coletaSep[j] = aux
+                    }
+                }
+                coletaSep[i] = menor
+                menor = coletaSep[i+1]
+            }
+            alert(coletaSep)//#TESTE#
+            
+            //amostra e população
+            for(var i = 0; i < amoOuPop.length; i++){
+                if(amoOuPop[i].checked){
+                    alert(amoOuPop[i].value)//#TESTE#
+                }
+            }
+
+            //tipo de variavel
+            alert(tipoVa)//#TESTE#
+        }
+    </script>
 </html>
